@@ -40,6 +40,17 @@
                     <x-jet-input class="form-control" type="password" name="password_confirmation" required autocomplete="new-password" />
                 </div>
 
+                <div class="mb-3">
+                    <x-jet-label value="{{ __('Registered As') }}" />
+
+                    <select name="role_id" x-model="role_id" class="form-control">
+                        <option value="2">Content User</option>
+                        <option value="3">Seo</option>
+                    </select>
+
+                    
+                </div>
+
                 @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                     <div class="mb-3">
                         <div class="custom-control custom-checkbox">

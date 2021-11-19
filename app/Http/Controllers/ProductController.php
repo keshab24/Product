@@ -14,7 +14,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+       
+            $data['about'] = Product::orderBy('created_at', 'desc')->get();
+            
+            return view('dashboard', $data);
+            
+            
     }
 
     /**
@@ -95,8 +100,28 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        try {
+            $why = Product::find($id);
+            $path = $why['image'];
+            if (file_exists($path)){
+                unlink($path);
+            }
+            $why->delete();
+            return redirect()->back()->withWarning_message('About Us Content Deleted !');
+
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function updateProductStatus(Request $request)
+    {
+        $product = Product::findOrFail($request->id);
+        $product->ready = !$product->ready;
+        $product->save();
+
+        return redirect()->back();
     }
 }

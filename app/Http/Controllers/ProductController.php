@@ -124,4 +124,13 @@ class ProductController extends Controller
 
         return redirect()->back();
     }
+    public function editf(Request $request,$id)
+    {
+        $product = Product::findOrFail($id);
+        $product->feedback = $request->feedback;
+        $product->ready = !$product->ready;
+        $product->save();
+        return redirect()->back();
+        
+    }
 }

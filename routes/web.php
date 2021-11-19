@@ -27,3 +27,5 @@ Route::post('/store',[\App\Http\Controllers\ProductController::class, 'store'])-
 Route::delete('/destroy/{id}',[\App\Http\Controllers\ProductController::class, 'store'])->name('product.destroy');
 
 Route::patch('product-update-status', [App\Http\Controllers\ProductController::class, 'updateProductStatus'])->name('product.status');
+
+Route::patch('product-feedback/{id}', [App\Http\Controllers\ProductController::class, 'editf'])->name('product.feedback');

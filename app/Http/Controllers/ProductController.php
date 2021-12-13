@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Info;
 use App\Models\Product;
+use App\Models\Education;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -15,7 +18,7 @@ class ProductController extends Controller
     public function index()
     {
        
-            $data['about'] = Product::orderBy('created_at', 'desc')->get();
+            $data['about'] = Info::orderBy('created_at', 'desc')->get();
             
             return view('dashboard', $data);
             
@@ -39,7 +42,31 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
+        try {
+           
+           
+            $file = new Info();
+
+            $file->create([
+                
+                'name' => $request['name'],
+                'gender' => $request['gender'],
+                'phone' => $request['phone'],
+                'email' => $request['email'],
+               'dob' => $request['dob'],
+                 'nationality' => $request['nationality'],
+                 'mode_of_contact' => $request['mode'],
+
+            ]);
+            return redirect()->back()->withSuccess_message('Information Added Successfully !');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+
+
+
+        /*
         try {
 
             $image = $request->file('image');
@@ -57,7 +84,7 @@ class ProductController extends Controller
             return redirect()->back()->withSuccess_message('Product Added Successfully !');
         } catch (\Exception $e) {
             return $e->getMessage();
-        }
+        }*/
     }
 
     /**
@@ -77,9 +104,11 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
-        //
+        $pro = Product::findorFail($id);
+        
+        return view('product.edit')->with('pro',$pro);
     }
 
     /**
@@ -89,9 +118,33 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            if($request->hasFile('image'))
+            {
+            $image = $request->file('image');
+           
+
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $file = Product::findorFail($id);
+            $file->update([
+                'image' => $imageName]);
+            $image->move(public_path('product'), $imageName);
+            }
+
+            $file = Product::findorFail($id);
+            $file->update([
+                
+                'name' => $request['name'],
+                'desc' => $request['desc'],
+                'price' => $request['price'],
+                'qty' => $request['qty'],
+            ]);
+            return redirect()->back()->withSuccess_message('Product Added Successfully !');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
@@ -126,11 +179,20 @@ class ProductController extends Controller
     }
     public function editf(Request $request,$id)
     {
-        $product = Product::findOrFail($id);
-        $product->feedback = $request->feedback;
-        $product->ready = !$product->ready;
-        $product->save();
-        return redirect()->back();
-        
+        try{
+        $file = New Education();
+        $file->create([
+                
+            'info_id' => $id,
+            'educational_inst' => $request['educational_inst'],
+            'level' => $request['level'],
+            'percentage' => $request['percentage'],
+
+        ]);
+
+        return redirect()->back()->withSuccess_message('Education Added Successfully !');
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
     }
 }

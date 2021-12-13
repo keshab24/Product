@@ -1,27 +1,28 @@
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="h4 font-weight-bold">
-            {{ __('Product') }}
+            {{ __('Personal') }}
         </h2>
         
-    </x-slot>
+    
 
     <div class="box">
        
         <div class="box-body">
             @include('layouts.alert')
 
-            @if(Auth::user()->role_id ==2)
+           
                 <div class="justify-content-end list-group list-group-horizontal ">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal" data-toggle="modal"
                             data-target="#addModal">
                            
-                        Add Product
+                        Add personal info
                         
                     </button>
-                    @include('product.add')
+                    @include('personal.add')
                 </div>
-           @endif
+          
             <br>
             <div class="blank-page">
                 
@@ -29,41 +30,35 @@
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Quantity</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">gender</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Nationality</th>
+                        <th scope="col">DOB</th>
 
                         <th scope="col">Actions</th>
-                        <th scope="col">Feedbacks</th>
+                        <th scope="col">Education</th>
                     </tr>
                     </thead>
                     <tbody>
-                        @if(Auth::user()->role_id ==3)
-                        @foreach($about->where('ready',1) as $why)
+                       
+                        @foreach($about as $why)
                         <tr>
                             <th scope="row">{{$loop->iteration}}</th>
-                            <td>
-                                <div class="col-md">
-                                    <div class="gallery-img">
-                                        <a target="_blank" href="{{$why['image']}}"
-                                           class="swipebox" title="Image Title">
-                                            <img class="img-responsive"
-                                                 src="{{asset('product/').'/'.$why['image']}}" width="70px" height="auto" alt="">
-                                            <span class="zoom-icon"> </span> </a>
-        
-                                    </div>
-                                </div>
-                            </td>
+                           
                             <td>
                                 {{$why['name']}}
                             </td>
-                            <td>{{$why['desc']}}</td>
-                            <td>{{$why['price']}}</td>
-                            <td>{{$why['qty']}}</td>
-                            <td>
-                                <form
+                            <td>{{$why['gender']}}</td>
+                            <td>{{$why['phone']}}</td>
+                            <td>{{$why['email']}}</td>
+                            
+                            
+                            <td>{{$why['nationality']}}</td>
+                            <td>{{$why['dob']}}</td>
+
+                              <td>  <form
                                                 action="{{ route('product.status') }}"
                                                 method="POST"
                                             >
@@ -96,75 +91,28 @@
                         </td>
                         <td>
                             
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal" data-toggle="modal"
-                                        data-target="#addModal">
-                                       
-                                    Add feedback
+                            @foreach($edu->where('info_id',$why['id']) as $ed)
+                            <ul>
+                                <li>
+                            {{$ed['educational_inst']}} Level:{{$ed['level']}} {{$ed['percentage']}}%
+                                </li>
+                            </ul>
+                                 @endforeach
+
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#feedModal" data-toggle="modal"
+                                        data-target="#feedModal">
+                                      
+                                    Add Education
                                     
                                 </button>
                                 @include('product.feedback')
                             
+                               
                         </td>
         
                         </tr>
                     @endforeach
 
-                        @else
-                        @foreach($about as $why)
-
-                            <tr>
-                    <th scope="row">{{$loop->iteration}}</th>
-                    <td>
-                        <div class="col-md">
-                            <div class="gallery-img">
-                                <a target="_blank" href="{{$why['image']}}"
-                                   class="swipebox" title="Image Title">
-                                    <img class="img-responsive"
-                                         src="{{asset('product/').'/'.$why['image']}}" width="70px" height="auto" alt="">
-                                    <span class="zoom-icon"> </span> </a>
-
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        {{$why['name']}}
-                    </td>
-                    <td>{{$why['desc']}}</td>
-                    <td>{{$why['price']}}</td>
-                    <td>{{$why['qty']}}</td>
-                    <td>
-                        <form
-                                        action="{{ route('product.status') }}"
-                                        method="POST"
-                                    >
-                                        @csrf
-                                        @method('PATCH')
-
-                                        <input type="hidden" name="id" value="{{ $why['id'] }}">
-
-                                        <div class="custom-control custom-switch">
-                                            <input
-                                                type="checkbox"
-                                                class="custom-control-input"
-                                                id="activeInactive{{$why['id']}}"
-                                                @if($why['ready'] == 1) checked @endif
-                                                onchange="this.form.submit()"
-                                            >
-                                            <label
-                                                class="custom-control-label"
-                                                for="activeInactive{{$why['id']}}">
-                                                {{ $why['ready'] == 1 ? 'Sent To SEO' : 'Send' }}
-                                            </label>
-                                        </div>
-                                    </form>
-                    </td>
-                   
-                    <td>{{$why['feedback']}}</td>
-                   
-
-                </tr>
-            @endforeach
-@endif
                  
 
             
@@ -174,5 +122,6 @@
         </div>
         <!-- /.box-body -->
     </div>
+</x-slot>
 
 </x-app-layout>

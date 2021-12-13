@@ -1,7 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Models\Info;
 use App\Models\Product;
+use App\Models\Education;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,13 +20,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    $data['about'] = Product::orderBy('created_at', 'desc')->get();
+Route::get('/dashboard', function () {
+    $data['about'] = Info::orderBy('created_at', 'desc')->get();
+    $data['edu'] = Education::orderBy('created_at', 'desc')->get();
 
     return view('dashboard',$data);
 })->name('dashboard');
 Route::post('/store',[\App\Http\Controllers\ProductController::class, 'store'])->name('product.store');
 Route::delete('/destroy/{id}',[\App\Http\Controllers\ProductController::class, 'store'])->name('product.destroy');
+
+Route::get('/edit/{id}',[\App\Http\Controllers\ProductController::class, 'edit'])->name('product.edit');
+
+Route::post('/editProduct/{id}',[\App\Http\Controllers\ProductController::class, 'update'])->name('product.update');
+
 
 Route::patch('product-update-status', [App\Http\Controllers\ProductController::class, 'updateProductStatus'])->name('product.status');
 
